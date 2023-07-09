@@ -60,9 +60,10 @@ int main() {
         }
     #endif // MATRIX_PRINT
 
-    auto start = std::chrono::steady_clock::now();
+    //std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
     gemm(in, wts, out, Q, L, F);
-    auto end = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 
     #ifdef MATRIX_PRINT
         std::cout << std::endl;
@@ -73,9 +74,10 @@ int main() {
         }
     #endif
 
-    auto optimized_start = std::chrono::steady_clock::now();
+    //std::chrono::time_point<std::chrono::steady_clock> optimized_start = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> optimized_start = std::chrono::system_clock::now();
     optimized_gemm(in, wts, opt_out, Q, L, F);
-    auto optimized_end = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> optimized_end = std::chrono::system_clock::now();
 
     #ifdef MATRIX_PRINT
         std::cout << std::endl;
@@ -86,9 +88,9 @@ int main() {
         }
     #endif
 
-    auto win_start = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> win_start = std::chrono::system_clock::now();
     winograd_gemm(in, wts, win_out, Q, L, F);
-    auto win_end = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> win_end = std::chrono::system_clock::now();
 
     #ifdef MATRIX_PRINT
         std::cout << std::endl;
