@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <immintrin.h>
-
 #include "half.hpp"
 
 using namespace half_float::literal;

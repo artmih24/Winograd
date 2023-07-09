@@ -22,7 +22,6 @@ int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half
         for (l = 0; l < L; l++) {
             lF = l * F;
             in_qL = in[qL + l];
-
             for (f = 0; f < F; f += 4) {
                 out[qF + f]     += in_qL * wts[lF + f];
                 out[qF + f + 1] += in_qL * wts[lF + f + 1];
