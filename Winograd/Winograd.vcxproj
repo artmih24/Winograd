@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{c32b92a6-de8f-425c-b519-a7efbbd7136f}</ProjectGuid>
-    <RootNamespace>Vinograd</RootNamespace>
+    <RootNamespace>Winograd</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Winograd</ProjectName>
   </PropertyGroup>
