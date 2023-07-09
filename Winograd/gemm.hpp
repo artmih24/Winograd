@@ -7,6 +7,9 @@ using namespace half_float::literal;
 /// <summary>
 /// matrix multiplication
 /// </summary>
+/// <typeparam name="T1">- type of input matrix</typeparam>
+/// <typeparam name="T2">- type of filters matrix</typeparam>
+/// <typeparam name="T3">- type of output matrix</typeparam>
 /// <param name="in">- input matrix</param>
 /// <param name="wts">- filters matrix</param>
 /// <param name="out">- output matrix</param>
@@ -20,6 +23,9 @@ int gemm(T1* in, T2* wts, T3* out, int Q, int L, int F);
 /// <summary>
 /// oprimized matrix multiplication
 /// </summary>
+/// <typeparam name="T1">- type of input matrix</typeparam>
+/// <typeparam name="T2">- type of filters matrix</typeparam>
+/// <typeparam name="T3">- type of output matrix</typeparam>
 /// <param name="in">- input matrix</param>
 /// <param name="wts">- filters matrix</param>
 /// <param name="out">- output matrix</param>
@@ -33,6 +39,9 @@ int optimized_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F);
 /// <summary>
 /// matrix multiplication with using Winograd algorithm
 /// </summary>
+/// <typeparam name="T1">- type of input matrix</typeparam>
+/// <typeparam name="T2">- type of filters matrix</typeparam>
+/// <typeparam name="T3">- type of output matrix</typeparam>
 /// <param name="in">- input matrix</param>
 /// <param name="wts">- filters matrix</param>
 /// <param name="out">- output matrix</param>
