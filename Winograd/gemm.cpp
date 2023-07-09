@@ -9,13 +9,13 @@ int gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int
 }
 
 int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F) {
-    int q,
-        l,
-        f,
-        qL,
-        lF,
-        qF;
-    half_float::half in_qL;
+    int q,                      // iteration variable for Q loop
+        l,                      // iteration variable for L loop
+        f,                      // iteration variable for F loop
+        qL,                     // temporary variable for q * L value
+        lF,                     // temporary variable for l * F value
+        qF;                     // temporary variable for q * F value
+    half_float::half in_qL;     // temporary variable for in[q * L + l] value
     for (q = 0; q < Q; q++) {
         qL = q * L;
         qF = q * F;
@@ -34,9 +34,9 @@ int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half
 }
 
 int winograd_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F) {
-    int hL = L / 2;
-    half_float::half *rowFactors = new half_float::half[Q],
-                     *colFactors = new half_float::half[F];
+    int hL = L / 2;                                             // L / 2 value
+    half_float::half *rowFactors = new half_float::half[Q],     // row factors array
+                     *colFactors = new half_float::half[F];     // column factors array
 
     // compute row factors
     for (int q = 0; q < Q; q++) {

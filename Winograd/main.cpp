@@ -9,8 +9,13 @@
 using namespace half_float::literal;
 using namespace jslike;
 
+// print matrices flag
 #define MATRIX_PRINT
 
+/// <summary>
+/// entry point of program
+/// </summary>
+/// <returns>0</returns>
 int main() {
     #ifdef _MSC_VER
         system("chcp 1253 > nul");
@@ -37,6 +42,7 @@ int main() {
     for (int q = 0; q < Q; q++)
         for (int f = 0; f < F; f++) {
             out[q * F + f]     = 0.0_h;
+            opt_out[q * F + f] = 0.0_h;
             win_out[q * F + f] = 0.0_h;
         }
     #ifdef MATRIX_PRINT
@@ -102,7 +108,7 @@ int main() {
 
     std::cout << std::endl;
 
-    std::cout << "gemm:" << std::endl;
+    std::cout << "optimized gemm:" << std::endl;
     std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(optimized_end - optimized_start).count() << " ns" << std::endl;
     std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(optimized_end - optimized_start).count() << " µs" << std::endl;
     std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(optimized_end - optimized_start).count() << " ms" << std::endl;
