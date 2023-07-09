@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="gemm.hpp" />
     <ClInclude Include="half.hpp" />
+    <ClInclude Include="jslike.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

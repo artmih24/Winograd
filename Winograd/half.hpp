@@ -21,7 +21,7 @@
 #pragma once
 
 #ifdef _MSC_VER
-#pragma warning(disable:4146)
+#pragma warning(disable : 4146)
 #endif
 
 #define HALF_TWOS_COMPLEMENT_INT 1

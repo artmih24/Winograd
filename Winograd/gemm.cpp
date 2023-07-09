@@ -8,6 +8,32 @@ int gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int
 	return 0;
 }
 
+int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F) {
+    int q,
+        l,
+        f,
+        qL,
+        lF,
+        qF;
+    half_float::half in_qL;
+    for (q = 0; q < Q; q++) {
+        qL = q * L;
+        qF = q * F;
+        for (l = 0; l < L; l++) {
+            lF = l * F;
+            in_qL = in[qL + l];
+
+            for (f = 0; f < F; f += 4) {
+                out[qF + f]     += in_qL * wts[lF + f];
+                out[qF + f + 1] += in_qL * wts[lF + f + 1];
+                out[qF + f + 2] += in_qL * wts[lF + f + 2];
+                out[qF + f + 3] += in_qL * wts[lF + f + 3];
+            }
+        }
+    }
+    return 0;
+}
+
 int winograd_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F) {
     int hL = L / 2;
     half_float::half *rowFactors = new half_float::half[Q],

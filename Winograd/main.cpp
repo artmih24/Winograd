@@ -4,8 +4,10 @@
 
 #include "half.hpp"
 #include "gemm.hpp"
+#include "jslike.h"
 
 using namespace half_float::literal;
+using namespace jslike;
 
 #define MATRIX_PRINT
 
@@ -24,6 +26,7 @@ int main() {
     half_float::half *in      = new half_float::half[QL],
                      *wts     = new half_float::half[LF],
                      *out     = new half_float::half[QF],
+                     *opt_out = new half_float::half[QF],
                      *win_out = new half_float::half[QF];
     for (int q = 0; q < Q; q++)
         for (int l = 0; l < L; l++)
@@ -64,6 +67,19 @@ int main() {
         }
     #endif
 
+    auto optimized_start = std::chrono::steady_clock::now();
+    optimized_gemm(in, wts, opt_out, Q, L, F);
+    auto optimized_end = std::chrono::steady_clock::now();
+
+    #ifdef MATRIX_PRINT
+        std::cout << std::endl;
+        for (int q = 0; q < Q; q++) {
+            for (int f = 0; f < F; f++)
+                std::cout << opt_out[q * F + f] << " ";
+            std::cout << std::endl;
+        }
+    #endif
+
     auto win_start = std::chrono::steady_clock::now();
     winograd_gemm(in, wts, win_out, Q, L, F);
     auto win_end = std::chrono::steady_clock::now();
@@ -86,6 +102,14 @@ int main() {
 
     std::cout << std::endl;
 
+    std::cout << "gemm:" << std::endl;
+    std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(optimized_end - optimized_start).count() << " ns" << std::endl;
+    std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(optimized_end - optimized_start).count() << " µs" << std::endl;
+    std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(optimized_end - optimized_start).count() << " ms" << std::endl;
+    std::cout << "Elapsed time in seconds:      " << std::chrono::duration_cast<std::chrono::seconds>(optimized_end - optimized_start).count() << " sec" << std::endl;
+
+    std::cout << std::endl;
+
     std::cout << "winograd gemm:" << std::endl;
     std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(win_end - win_start).count() << " ns" << std::endl;
     std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(win_end - win_start).count() << " µs" << std::endl;
@@ -95,6 +119,8 @@ int main() {
     delete[] in;
     delete[] wts;
     delete[] out;
+    delete[] opt_out;
+    delete[] win_out;
     #ifdef _MSC_VER
     system("chcp 1251 > nul");
     #endif
