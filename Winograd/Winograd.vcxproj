@@ -128,11 +128,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gemm.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gemm.hpp" />
+    <ClInclude Include="gemm.ipp" />
     <ClInclude Include="half.hpp" />
     <ClInclude Include="jslike.h" />
   </ItemGroup>

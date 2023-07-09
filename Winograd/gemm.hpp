@@ -14,7 +14,8 @@ using namespace half_float::literal;
 /// <param name="L">- columns of input matrix and lines of filters matrix</param>
 /// <param name="F">- columns of filters and output matrices</param>
 /// <returns>0</returns>
-int gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F);
+template <typename T1, typename T2, typename T3>
+int gemm(T1* in, T2* wts, T3* out, int Q, int L, int F);
 
 /// <summary>
 /// oprimized matrix multiplication
@@ -26,7 +27,8 @@ int gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int
 /// <param name="L">- columns of input matrix and lines of filters matrix</param>
 /// <param name="F">- columns of filters and output matrices</param>
 /// <returns>0</returns>
-int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F);
+template <typename T1, typename T2, typename T3>
+int optimized_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F);
 
 /// <summary>
 /// matrix multiplication with using Winograd algorithm
@@ -38,4 +40,7 @@ int optimized_gemm(half_float::half* in, half_float::half* wts, half_float::half
 /// <param name="L">- columns of input matrix and lines of filters matrix</param>
 /// <param name="F">- columns of filters and output matrices</param>
 /// <returns>0</returns>
-int winograd_gemm(half_float::half* in, half_float::half* wts, half_float::half* out, int Q, int L, int F);
+template <typename T1, typename T2, typename T3>
+int winograd_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F);
+
+#include "gemm.ipp"
