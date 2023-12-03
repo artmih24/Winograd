@@ -9,6 +9,10 @@
 #pragma warning(disable : 4996)
 #endif
 
+#ifdef __GNUC__
+#define __uint16_t uint16_t
+#endif
+
 namespace jslike {
 typedef __uint16_t jschar;
 #define self (*this)
@@ -36,7 +40,11 @@ int len(wchar_t *c) {
 
 jschar UTF = 0xFEFF;
 
-int utf_offsets[6] = { 0x0UL, 0x3080UL, 0xE2080UL, 0x3C82080UL, 0xFA082080UL, 0x82082080UL };
+#ifdef __GNUC__
+	int utf_offsets[6] = { 0x0UL, 0x3080UL, 0xE2080UL, 0x3C82080UL, static_cast<int>(0xFA082080UL), static_cast<int>(0x82082080UL) };
+#else
+	int utf_offsets[6] = { 0x0UL, 0x3080UL, 0xE2080UL, 0x3C82080UL, 0xFA082080UL, 0x82082080UL };
+#endif
 
 unsigned char utf_trail(int i)
 {
@@ -2107,18 +2115,33 @@ char* load(char *fileName, int *filesize=0) { // you must 'delete' returned poin
 		}
 		else return 0;
 	#else
-		if (f >= 0) {
-			int size = fileSize(fileName);
-			if (filesize) *filesize = size;
-			if (size < 0) {
-				return 0;
+		#ifdef __GNUC__
+			if ((unsigned long long int)f >= 0) {
+				int size = fileSize(fileName);
+				if (filesize) *filesize = size;
+				if (size < 0) {
+					return 0;
+				}
+				char *s = new char[size];
+				int l = fread(s, 1, size, f);
+				fclose(f);
+				return s;
 			}
-			char* s = new char[size];
-			int l = fread(s, 1, size, f);
-			fclose(f);
-			return s;
-		}
-		else return 0;
+			else return 0;
+		#else
+			if (f >= 0) {
+				int size = fileSize(fileName);
+				if (filesize) *filesize = size;
+				if (size < 0) {
+					return 0;
+				}
+				char* s = new char[size];
+				int l = fread(s, 1, size, f);
+				fclose(f);
+				return s;
+			}
+			else return 0;
+		#endif
 	#endif
 }
 

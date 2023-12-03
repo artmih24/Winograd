@@ -1,4 +1,4 @@
-template <typename T1, typename T2, typename T3>
+template<typename T1, typename T2, typename T3>
 int gemm(T1* in, T2* wts, T3* out, int Q, int L, int F) {
     for (int q = 0; q < Q; q++)
         for (int l = 0; l < L; l++)
@@ -7,7 +7,7 @@ int gemm(T1* in, T2* wts, T3* out, int Q, int L, int F) {
     return 0;
 }
 
-template <typename T1, typename T2, typename T3>
+template<typename T1, typename T2, typename T3>
 int optimized_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F) {
     int q,                      // iteration variable for Q loop
         l,                      // iteration variable for L loop
@@ -15,25 +15,25 @@ int optimized_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F) {
         qL,                     // temporary variable for q * L value
         lF,                     // temporary variable for l * F value
         qF;                     // temporary variable for q * F value
-    T1 in_qL;                   // temporary variable for in[q * L + l] value
+    T1 in_qLl;                  // temporary variable for in[q * L + l] value
     for (q = 0; q < Q; q++) {
         qL = q * L;
         qF = q * F;
         for (l = 0; l < L; l++) {
             lF = l * F;
-            in_qL = in[qL + l];
+            in_qLl = in[qL + l];
             for (f = 0; f < F; f += 4) {
-                out[qF + f] += in_qL * wts[lF + f];
-                out[qF + f + 1] += in_qL * wts[lF + f + 1];
-                out[qF + f + 2] += in_qL * wts[lF + f + 2];
-                out[qF + f + 3] += in_qL * wts[lF + f + 3];
+                out[qF + f] += in_qLl * wts[lF + f];
+                out[qF + f + 1] += in_qLl * wts[lF + f + 1];
+                out[qF + f + 2] += in_qLl * wts[lF + f + 2];
+                out[qF + f + 3] += in_qLl * wts[lF + f + 3];
             }
         }
     }
     return 0;
 }
 
-template <typename T1, typename T2, typename T3>
+template<typename T1, typename T2, typename T3>
 int winograd_gemm(T1* in, T2* wts, T3* out, int Q, int L, int F) {
     int hL = L / 2;                                             // L / 2 value
     T3 *rowFactors = new T3[Q],     // row factors array

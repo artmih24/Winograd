@@ -12,16 +12,18 @@ using namespace jslike;
 // print matrices flag
 #define MATRIX_PRINT
 
-/// <summary>
-/// entry point of program
-/// </summary>
-/// <returns>0</returns>
+/**
+ * entry point of program
+ * 
+ * \return 0
+ */
 int main() {
-    #ifdef _MSC_VER
-        system("chcp 1253 > nul");
-    #endif
+#ifdef _MSC_VER
+    system("chcp 1253 > nul");
+#endif
     //half_float::half a = 0.123_h;
     //std::cout << "a = " << a << " = 0x" << std::hex << *(uint16_t*)(&a) << std::dec << std::endl;
+
     int Q = 16,
         L = 16,
         F = 16;
@@ -45,62 +47,71 @@ int main() {
             opt_out[q * F + f] = 0.0_h;
             win_out[q * F + f] = 0.0_h;
         }
-    #ifdef MATRIX_PRINT
-        //std::cout << std::endl;
-        for (int q = 0; q < Q; q++) {
-            for (int l = 0; l < L; l++)
-                std::cout << in[q * L + l] << " ";
-            std::cout << std::endl;
-        }
+#ifdef MATRIX_PRINT
+    //std::cout << std::endl;
+    for (int q = 0; q < Q; q++) {
+        for (int l = 0; l < L; l++)
+            std::cout << in[q * L + l] << " ";
         std::cout << std::endl;
-        for (int l = 0; l < L; l++) {
-            for (int f = 0; f < F; f++)
-                std::cout << wts[l * F + f] << " ";
-            std::cout << std::endl;
-        }
-    #endif // MATRIX_PRINT
+    }
+    std::cout << std::endl;
+    for (int l = 0; l < L; l++) {
+        for (int f = 0; f < F; f++)
+            std::cout << wts[l * F + f] << " ";
+        std::cout << std::endl;
+    }
+#endif // MATRIX_PRINT
 
-    //std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+    //std::chrono::time_point<std::chrono::steady_clock> start;
+    //std::chrono::time_point<std::chrono::system_clock> start;
+    std::chrono::time_point<std::chrono::high_resolution_clock> start,
+                                                                end,
+                                                                opt_start,
+                                                                opt_end,
+                                                                win_start,
+                                                                win_end;
+
+    start = std::chrono::high_resolution_clock::now();
     gemm(in, wts, out, Q, L, F);
-    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+    end = std::chrono::high_resolution_clock::now();
 
-    #ifdef MATRIX_PRINT
+#ifdef MATRIX_PRINT
+    std::cout << std::endl;
+    for (int q = 0; q < Q; q++) {
+        for (int f = 0; f < F; f++)
+            std::cout << out[q * F + f] << " ";
         std::cout << std::endl;
-        for (int q = 0; q < Q; q++) {
-            for (int f = 0; f < F; f++)
-                std::cout << out[q * F + f] << " ";
-            std::cout << std::endl;
-        }
-    #endif
+    }
+#endif
 
     //std::chrono::time_point<std::chrono::steady_clock> optimized_start = std::chrono::steady_clock::now();
-    std::chrono::time_point<std::chrono::system_clock> optimized_start = std::chrono::system_clock::now();
+
+    opt_start = std::chrono::high_resolution_clock::now();
     optimized_gemm(in, wts, opt_out, Q, L, F);
-    std::chrono::time_point<std::chrono::system_clock> optimized_end = std::chrono::system_clock::now();
+    opt_end = std::chrono::high_resolution_clock::now();
 
-    #ifdef MATRIX_PRINT
+#ifdef MATRIX_PRINT
+    std::cout << std::endl;
+    for (int q = 0; q < Q; q++) {
+        for (int f = 0; f < F; f++)
+            std::cout << opt_out[q * F + f] << " ";
         std::cout << std::endl;
-        for (int q = 0; q < Q; q++) {
-            for (int f = 0; f < F; f++)
-                std::cout << opt_out[q * F + f] << " ";
-            std::cout << std::endl;
-        }
-    #endif
+    }
+#endif
 
-    std::chrono::time_point<std::chrono::system_clock> win_start = std::chrono::system_clock::now();
+    win_start = std::chrono::high_resolution_clock::now();
     winograd_gemm(in, wts, win_out, Q, L, F);
-    std::chrono::time_point<std::chrono::system_clock> win_end = std::chrono::system_clock::now();
+    win_end = std::chrono::high_resolution_clock::now();
 
-    #ifdef MATRIX_PRINT
+#ifdef MATRIX_PRINT
+    std::cout << std::endl;
+    for (int q = 0; q < Q; q++) {
+        for (int f = 0; f < F; f++)
+            std::cout << win_out[q * F + f] << " ";
         std::cout << std::endl;
-        for (int q = 0; q < Q; q++) {
-            for (int f = 0; f < F; f++)
-                std::cout << win_out[q * F + f] << " ";
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    #endif
+    }
+    std::cout << std::endl;
+#endif
 
     std::cout << "gemm:" << std::endl;
     std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
@@ -111,10 +122,10 @@ int main() {
     std::cout << std::endl;
 
     std::cout << "optimized gemm:" << std::endl;
-    std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(optimized_end - optimized_start).count() << " ns" << std::endl;
-    std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(optimized_end - optimized_start).count() << " µs" << std::endl;
-    std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(optimized_end - optimized_start).count() << " ms" << std::endl;
-    std::cout << "Elapsed time in seconds:      " << std::chrono::duration_cast<std::chrono::seconds>(optimized_end - optimized_start).count() << " sec" << std::endl;
+    std::cout << "Elapsed time in nanoseconds:  " << std::chrono::duration_cast<std::chrono::nanoseconds>(opt_end - opt_start).count() << " ns" << std::endl;
+    std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(opt_end - opt_start).count() << " µs" << std::endl;
+    std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(opt_end - opt_start).count() << " ms" << std::endl;
+    std::cout << "Elapsed time in seconds:      " << std::chrono::duration_cast<std::chrono::seconds>(opt_end - opt_start).count() << " sec" << std::endl;
 
     std::cout << std::endl;
 
@@ -129,8 +140,8 @@ int main() {
     delete[] out;
     delete[] opt_out;
     delete[] win_out;
-    #ifdef _MSC_VER
+#ifdef _MSC_VER
     system("chcp 1251 > nul");
-    #endif
+#endif
     return 0;
 }
