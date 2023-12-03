@@ -4,10 +4,10 @@
 
 #include "half.hpp"
 #include "gemm.hpp"
-#include "jslike.h"
+// #include "jslike.h"
 
 using namespace half_float::literal;
-using namespace jslike;
+// using namespace jslike;
 
 // print matrices flag
 #define MATRIX_PRINT

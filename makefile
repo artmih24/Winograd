@@ -1,8 +1,27 @@
+ifeq ($(OS),Windows_NT) 
+RM = del /Q /F
+CP = copy /Y
+EXE = a.exe
+ifdef ComSpec
+SHELL := $(ComSpec)
+endif
+ifdef COMSPEC
+SHELL := $(COMSPEC)
+endif
+else
+RM = rm -rf
+CP = cp -f
+EXE = a.out
+endif
+
 all: main.o gemm.o
-	g++ -std=c++11 main.o gemm.o -o Winograd.exe
+	g++ main.o gemm.o -o $(EXE)
 
 main.o:
-	g++ -std=c++11 -c Winograd/main.cpp -o main.o
+	g++ -c Winograd/main.cpp
 
 gemm.o:
-	g++ -std=c++11 -c Winograd/gemm.cpp -o gemm.o
+	g++ -c Winograd/gemm.cpp
+
+clean:
+	$(RM) *.o $(EXE)
